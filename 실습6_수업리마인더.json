@@ -1,0 +1,241 @@
+{
+  "name": "실습6_수업리마인더",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "da7e4cb2-38a6-4247-b83c-be45bb256496",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1C9Y03RalHhxlCqEe3eIC1bdNSraY2VCf2DCr-c10TbY",
+          "mode": "list",
+          "cachedResultName": "수업일정",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C9Y03RalHhxlCqEe3eIC1bdNSraY2VCf2DCr-c10TbY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C9Y03RalHhxlCqEe3eIC1bdNSraY2VCf2DCr-c10TbY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8ee56abc-11ff-40bb-a217-adc7ced1de53",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "b385cfOeWCOZ60XE",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b3c9f007-8a95-4b0e-aba2-3b186b786915",
+              "leftValue": "={{ $json['수업날짜'] }}",
+              "rightValue": "={{ $now.plus(1, 'day').format('yyyy-MM-dd')}}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "8cc3c255-072c-4820-8cd0-67c0b53c2a10",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ukZ5gGF7juN_Tb-VZZbuwzkdTPup8HOSoK0fSxiKNSs",
+          "mode": "list",
+          "cachedResultName": "수강생_명단",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ukZ5gGF7juN_Tb-VZZbuwzkdTPup8HOSoK0fSxiKNSs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ukZ5gGF7juN_Tb-VZZbuwzkdTPup8HOSoK0fSxiKNSs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "ab502795-5eac-48b4-935a-3fb10b7ebbbf",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "b385cfOeWCOZ60XE",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "faac79d6-a3e4-43de-b2c2-53959d3594d3",
+              "leftValue": "={{ $('Get row(s) in sheet').item.json['과정명'] }}",
+              "rightValue": "={{ $json['과정'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        -96
+      ],
+      "id": "1388c5a1-9bf8-41b2-bfa3-cbbb84e41561",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['이메일'] }}",
+        "subject": "=[리마인더] 내일 {{ $json['과정'] }} 수업이 있습니다",
+        "message": "=<h2>{{ $json.이름 }}님, 내일 수업이 있습니다!</h2> <ul>   <li>📚 과정: {{ $('Get row(s) in sheet').item.json['과정명'] }}</li>   <li>🕐 시간: {{ $('Get row(s) in sheet').item.json['수업시간'] }}</li>   <li>📍 장소: {{ $('Get row(s) in sheet').item.json['강의실'] }}</li>   <li>👨‍🏫 강사: {{ $('Get row(s) in sheet').item.json['강사'] }}</li> </ul> <p>준비물을 잊지 마시고, 10분 전까지 입실해주세요!</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        -192
+      ],
+      "id": "265893b3-d161-4ba4-af8d-ee02d679730e",
+      "name": "Send a message",
+      "webhookId": "bc448366-c519-4001-b116-63ddaf2251f4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Zd810Tj1LyTOXE74",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "227836c3-b4a1-4e61-beb3-23b6c8a5478f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1da1c98d9a28d707a677c758310dc32b76449574e8427da5ba6764c4435cf41e"
+  },
+  "id": "TvvnVs9NnMUWlSaI",
+  "tags": []
+}
