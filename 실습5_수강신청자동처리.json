@@ -1,0 +1,430 @@
+{
+  "name": "실습5_수강신청자동처리",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "enrollment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3b7ee518-e4a2-4b14-aa43-f3bf08096763",
+      "name": "Webhook",
+      "webhookId": "972990f0-6b5c-42f3-be63-c749f03285b5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a6a11e17-ce73-48ee-9b76-74da09f3cf31",
+              "name": "이름",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3b846d64-02c2-4d41-b931-1f600628a183",
+              "name": "이메일",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "449b8498-1b98-4372-8b67-a71f8f3c6a73",
+              "name": "과정명",
+              "value": "=\t{{ $json.body.course }}",
+              "type": "string"
+            },
+            {
+              "id": "6490f5b6-bedd-44aa-8671-785eb99c99b1",
+              "name": "연락처",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "725e170d-9b56-4ad7-9527-2eccc7d5f5d7",
+              "name": "신청일시",
+              "value": "=\t{{ $now.format('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        0
+      ],
+      "id": "8e0eaa80-853b-494a-be8c-d8d9fe28985e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w",
+          "mode": "list",
+          "cachedResultName": "수강신청_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "이름": "={{ $('Edit Fields').item.json['이름'] }}",
+            "이메일": "={{ $('Edit Fields').item.json['이메일'] }}",
+            "과정명": "={{ $('Edit Fields').item.json['과정명'] }}",
+            "신청일시": "={{ $('Edit Fields').item.json['신청일시'] }}",
+            "연락처": "={{ $('Edit Fields').item.json['연락처'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "이름",
+              "displayName": "이름",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "이메일",
+              "displayName": "이메일",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "과정명",
+              "displayName": "과정명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "신청일시",
+              "displayName": "신청일시",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "연락처",
+              "displayName": "연락처",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        992,
+        -160
+      ],
+      "id": "8243a8dd-be10-4aad-9da7-2eebf7b2cad6",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "b385cfOeWCOZ60XE",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w",
+          "mode": "list",
+          "cachedResultName": "수강신청_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dPkYZbJaUrMmZIMqwVGGqtRsilQoTP9dZBLIDn_4R_w/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=이메일",
+              "lookupValue": "={{ $json['이메일'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        0
+      ],
+      "id": "4ceef8ef-8efc-42e0-a30b-d728f030f535",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "b385cfOeWCOZ60XE",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4d385d43-ab5f-4feb-8004-4bf011046b9f",
+              "leftValue": "={{ Object.keys($json).length }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        0
+      ],
+      "id": "0b22be56-8201-4c4f-978c-b1d34d1b0d1b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.이메일 }}",
+        "subject": "=[{{ $json.과정명 }}] 수강 신청이 완료되었습니다",
+        "message": "=<h2>{{ $json.이름 }}님, 환영합니다!</h2> <p><strong>{{ $json.과정명 }}</strong> 수강 신청이 정상적으로 접수되었습니다.</p> <p>신청일시: {{ $json.신청일시 }}</p> <p>수업 관련 상세 안내는 별도 이메일로 발송드리겠습니다.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        -160
+      ],
+      "id": "969f81a0-8ec6-4589-8cfa-472cdf5378bf",
+      "name": "Send a message",
+      "webhookId": "b4ac520d-9af8-4815-ae16-5772613f1869",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Zd810Tj1LyTOXE74",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"success\", \"message\": \"수강 신청이 완료되었습니다.\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1488,
+        -160
+      ],
+      "id": "b35bbab1-191e-4ffb-8f17-740b36569024",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"duplicate\", \"message\": \"이미 동일한 이메일로 신청된 기록이 있습니다.\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1280,
+        80
+      ],
+      "id": "c09c9947-3f24-4c22-b501-089fad658490",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4d385d43-ab5f-4feb-8004-4bf011046b9f",
+              "leftValue": "={{ $('Webhook').item.json.body.email }}",
+              "rightValue": "={{ $json['이메일'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        992,
+        96
+      ],
+      "id": "76fe3d68-593a-49df-a06a-895efd4c4f7e",
+      "name": "If1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9e93c1b6-805e-4ddd-9e4d-c893e1e185d8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1da1c98d9a28d707a677c758310dc32b76449574e8427da5ba6764c4435cf41e"
+  },
+  "id": "kJy9N8cQrGSo5h5m",
+  "tags": []
+}
