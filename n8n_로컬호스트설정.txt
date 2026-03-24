@@ -1,0 +1,38 @@
+n8n 로컬 호스트 설정 
+
+node js download : https://nodejs.org/ko/download
+
+node js 설치 확인
+C:\> node
+node js 버전 확인
+C:\> node -v
+node package manager 설치 확인
+C:\> npm
+
+n8n 설치
+C:\> npm install -g n8n
+
+n8n 서버 기동
+C:\> n8n start
+
+크롬에서 
+http://localhost:5678 실행
+
+ngrok 설치 
+https://ngrok.com/download
+에서 
+Microsoft Store Installer 클릭 하여 설치
+
+cmd 재시작 후
+C:\> ngrok --version
+ngrok version 3.24.
+
+ngrok 사이트 참조
+ngrok 인증 
+C:\> ngrok config add-authtoken 31oaChs9JJdC7DMW1W2XwX23gkw_TH6nigm5n8bWYcYekBZr
+
+ngrok static domain 설정 
+C:\> ngrok http --url=stag-hardy-rat.ngrok-free.app 5678
+
+크롬에서 
+stag-hardy-rat.ngrok-free.app 접속

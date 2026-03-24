@@ -1,0 +1,24 @@
+구글 GCP client 정보 등록
+
+Client ID 
+Client Secret 
+
+구글에서 gcp 검색
+Google Cloud: 클라우드 컴퓨팅 서비스  클릭
+
+오른쪽 상단 메뉴 : 콘솔 클릭
+
+API 및 서비스 클릭 
+API 서비스 사용설정 에서 
+gmail 검색 후 
+gmail API 사용 설정 
+
+OAuth 클라이언트 ID 만들기 에서 
+리다이렉션을 n8n account에서 copy 해서 붙혀넣기 
+
+생성 후
+Client ID : 
+Client Secret : 
+
+n8n에 붙혀 넣기
+
