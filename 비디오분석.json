@@ -1,0 +1,164 @@
+{
+  "name": "비디오분석",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "ee367503-fb0e-4f40-ae63-6eb47b528818",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "이 비디오에서 텍스트를 추출 해줘 ",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "8b7013f1-2e89-48d9-bc65-09720f0681f2",
+      "name": "Analyze video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "l56RTU60T8mE7dFk",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/imguru-mooc/n8n_agent/main/video_sample.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ad82863a-d2ac-48f1-8f63-eefb3b983dcb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\n\nif (item.binary?.data) {\n  item.binary.data.mimeType = 'video/mp4';\n  item.binary.data.fileName = 'sample.mp4';\n}\n\nreturn [item];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ed4a0063-43d0-45f9-96cd-280b750b3f45",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=아래 내용의 text를 알기 쉽게 5문장으로 요약 해줘 \n\ntext : {{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "684c34fc-f003-49a2-bac3-3aa80830f16a",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "l56RTU60T8mE7dFk",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Analyze video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze video": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "129bbb73-3370-4c7a-93e6-35d43c191231",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1da1c98d9a28d707a677c758310dc32b76449574e8427da5ba6764c4435cf41e"
+  },
+  "id": "HVU4PxK0nF8IXSFl",
+  "tags": []
+}
